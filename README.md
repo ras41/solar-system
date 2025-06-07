@@ -2,6 +2,8 @@
 
 A stunning, movie-quality 3D solar system simulation featuring realistic planetary systems, moons, asteroid belts, comets, and advanced visual effects powered by Three.js.
 
+![alt text](image.png)
+
 ### 🌙 Complete Moon Systems
 
 - All moons orbit their parent planets with accurate relative speeds
