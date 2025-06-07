@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enhanced 3D Solar System - Cinematic Edition</title>
+    <!-- <link rel="stylesheet" href="styles.css" /> -->
+    <link rel="stylesheet" href="styles.css" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <!-- 3D Canvas -->
+      <canvas id="solar-system-canvas"></canvas>
+
+      <!-- Loading Screen -->
+      <div id="loading-screen">
+        <div class="loading-container">
+          <div class="loading-spinner"></div>
+          <div class="loading-text">
+            <h2>Loading Enhanced Solar System</h2>
+            <p id="loading-progress">Initializing 3D Engine...</p>
+            <div class="progress-bar">
+              <div class="progress-fill" id="progress-fill"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- UI Controls -->
+      <div id="ui-panel" class="ui-panel">
+        <div class="panel-header">
+          <h2>🌌 Solar System Control Center</h2>
+          <button id="toggle-panel" class="toggle-btn">−</button>
+        </div>
+
+        <div class="panel-content">
+          <!-- Global Controls -->
+          <div class="control-section">
+            <h3>🎮 Global Controls</h3>
+            <div class="control-grid">
+              <button id="pause-resume" class="control-btn primary">
+                ⏸️ Pause
+              </button>
+              <button id="reset-view" class="control-btn">🎯 Reset</button>
+              <button id="theme-toggle" class="control-btn">🌙 Dark</button>
+              <button id="quality-toggle" class="control-btn">✨ Ultra</button>
+            </div>
+
+            <div class="control-group">
+              <label for="global-speed">🚀 Global Speed:</label>
+              <input
+                type="range"
+                id="global-speed"
+                min="0"
+                max="5"
+                step="0.1"
+                value="1"
+              />
+              <span id="global-speed-value">1.0x</span>
+            </div>
+
+            <div class="control-group">
+              <label for="camera-distance">📷 Camera Distance:</label>
+              <input
+                type="range"
+                id="camera-distance"
+                min="30"
+                max="300"
+                step="5"
+                value="100"
+              />
+              <span id="camera-distance-value">100</span>
+            </div>
+          </div>
+
+          <!-- Visual Effects -->
+          <div class="control-section">
+            <h3>🎨 Visual Effects</h3>
+            <div class="control-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="show-moons" checked />
+                <span class="checkmark"></span>
+                Show Moons
+              </label>
+            </div>
+            <div class="control-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="show-asteroids" checked />
+                <span class="checkmark"></span>
+                Asteroid Belt
+              </label>
+            </div>
+            <div class="control-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="show-comets" checked />
+                <span class="checkmark"></span>
+                Comets
+              </label>
+            </div>
+            <div class="control-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="show-atmosphere" checked />
+                <span class="checkmark"></span>
+                Atmospheric Glow
+              </label>
+            </div>
+            <div class="control-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="show-particles" checked />
+                <span class="checkmark"></span>
+                Space Dust
+              </label>
+            </div>
+          </div>
+
+          <!-- Planet Controls -->
+          <div class="control-section">
+            <h3>🪐 Planet Controls</h3>
+            <div id="planet-controls"></div>
+          </div>
+
+          <!-- Information Panel -->
+          <div class="control-section">
+            <h3>ℹ️ Information</h3>
+            <div id="planet-info">
+              <p>🖱️ Click on any celestial body to explore</p>
+            </div>
+          </div>
+
+          <!-- Statistics -->
+          <div class="control-section">
+            <h3>📊 Statistics</h3>
+            <div id="stats-info">
+              <div class="stat-item">
+                <span class="stat-label">Objects:</span>
+                <span id="object-count">0</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">FPS:</span>
+                <span id="fps-counter">60</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Particles:</span>
+                <span id="particle-count">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Planet Tooltip -->
+      <div id="planet-tooltip" class="tooltip"></div>
+
+      <!-- Instructions -->
+      <div id="instructions" class="instructions">
+        <h3>🎮 Enhanced Controls:</h3>
+        <ul>
+          <li><strong>🖱️ Mouse Drag:</strong> Rotate camera</li>
+          <li><strong>🖱️ Scroll:</strong> Zoom in/out</li>
+          <li><strong>🖱️ Click:</strong> Focus on objects</li>
+          <li><strong>⌨️ WASD:</strong> Fly camera</li>
+          <li><strong>⌨️ Space:</strong> Pause/Resume</li>
+          <li><strong>⌨️ R:</strong> Reset view</li>
+        </ul>
+        <button id="close-instructions">×</button>
+      </div>
+
+      <!-- Quality Settings Modal -->
+      <div id="quality-modal" class="modal">
+        <div class="modal-content">
+          <h3>🎨 Graphics Quality Settings</h3>
+          <div class="quality-options">
+            <button class="quality-btn" data-quality="low">
+              💻 Performance
+            </button>
+            <button class="quality-btn" data-quality="medium">
+              ⚖️ Balanced
+            </button>
+            <button class="quality-btn active" data-quality="high">
+              ✨ Quality
+            </button>
+            <button class="quality-btn" data-quality="ultra">
+              🎬 Cinematic
+            </button>
+          </div>
+          <button id="close-quality-modal" class="control-btn">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
