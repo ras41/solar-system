@@ -4,6 +4,8 @@ A stunning, movie-quality 3D solar system simulation featuring realistic planeta
 
 ![alt text](image.png)
 
+**🚀 Explore it here:** [ View the Solar System Simulation](https://ras41.github.io/solar-system/)
+
 ### 🌙 Complete Moon Systems
 
 - All moons orbit their parent planets with accurate relative speeds
